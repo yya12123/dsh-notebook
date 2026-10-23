@@ -1,6 +1,6 @@
 # 活页笔记本 · dsh-notebook
 
-A loose-leaf notebook memory plugin for DeepSeek Harness. History that compaction pushed out of the model's context becomes searchable local entries, so the model recalls the details it needs by keyword instead of losing them.
+**简体中文** · [English](README.en.md)
 
 给长期对话用的一本「活页笔记本」。被上下文压缩（compaction）挤掉的旧消息不会消失：它们会被归档成本地可检索的条目，模型需要时按关键词取回原文，不需要时只占一行目录。
 
