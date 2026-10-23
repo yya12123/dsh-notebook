@@ -1,0 +1,16 @@
+# Dependencies and local state never belong in the repository.
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+
+# Editor and OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local logs and scratch output
+*.log
+*.tmp
+test/.output/

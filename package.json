@@ -1,0 +1,37 @@
+{
+  "name": "dsh-notebook",
+  "version": "0.1.2",
+  "private": true,
+  "description": "活页笔记本：把被压缩掉的会话历史归档成按时间分层、可检索的条目，让模型按关键词取回，而不是整段遗忘。",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib/*.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "icon": "icon.svg",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "notebook",
+    "memory",
+    "context"
+  ],
+  "license": "MIT"
+}

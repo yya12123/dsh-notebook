@@ -1,0 +1,27 @@
+# dsh-notebook — loose-leaf notebook
+#
+# Every value below is optional; the plugin falls back to the same defaults when
+# the key is missing. Keep this row's id stable: the user patch layer targets it.
+- insert:
+    - id: dsh-notebook
+      name: dsh-notebook
+      config:
+        # Where one JSONL file per session is kept.
+        # Default: <dsh home>/notebook, i.e. ~/.dsh/notebook
+        # dataDir: 'C:/Users/you/.dsh/notebook'
+        # Maximum characters stored per entry (long pastes are clipped).
+        entryChars: 4000
+        # Characters kept for the one-line abstract shown by search.
+        abstractChars: 140
+        # Entries older than this many turns, once off the model surface, are "far".
+        midTurns: 20
+        # Default number of search hits.
+        searchLimit: 8
+        # Default total characters returned by one notebook_read.
+        readMaxChars: 2400
+        # Add a short system-prompt section telling the model the notebook exists.
+        instructions: true
+        # Also keep notebooks for subagent sessions.
+        includeSubagents: false
+        # Extra tag patterns, e.g. { 家人: '妈妈|爸爸|家里' }
+        tagRules: {}

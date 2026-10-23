@@ -1,0 +1,9 @@
+# Keep line endings consistent for everyone who clones this repo.
+* text=auto eol=lf
+
+# Binary assets (none today, but the icon may gain a raster variant).
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary

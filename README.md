@@ -1,0 +1,59 @@
+# 活页笔记本 · dsh-notebook
+
+A loose-leaf notebook memory plugin for DeepSeek Harness. History that compaction pushed out of the model's context becomes searchable local entries, so the model recalls the details it needs by keyword instead of losing them.
+
+给长期对话用的一本「活页笔记本」。被上下文压缩（compaction）挤掉的旧消息不会消失：它们会被归档成本地可检索的条目，模型需要时按关键词取回原文，不需要时只占一行目录。
+
+## 它解决什么问题
+
+DSH 的会话日志本身是完整的——压缩只是把**模型看得见的那部分**换成一段摘要，日志并没有删。所以「压缩 = 永久失忆」并不是必须的。
+
+本插件做的事：
+
+1. **持续抄写**：每个 `user/message` / `assistant/message` 落成一条笔记（不调用模型、不产生额外 token）。
+2. **按时间分层**：用会话真实的「模型可见面」判断层级——
+   - `近`：还在当前上下文里的消息；
+   - `中`：已被压缩掉、但还比较近的；
+   - `远`：已经被压缩掉、属于很久以前的。
+3. **按来源与话题分类**：`human`（对方）/ `self`（自己）/ `reflection`（自己写下的思考），话题标签如 感情、重要节点、回忆、偏好、技术、日常。
+4. **按需取回**：模型先 `notebook_search` 用关键词找编号，再 `notebook_read` 读原文；`notebook_mark` 可以把重要节点做成书签，或写一段自己的思考。
+
+关键点：**笔记本不参与每次请求**。常驻的只有一条简短的提示（约 120 字）和三个工具的 schema；正文只在你真正调用时才进上下文。
+
+## 工具
+
+| 工具 | 作用 |
+| --- | --- |
+| `notebook_search` | 关键词 + `kind` / `tag` / `tier` 过滤，返回带编号的摘要卡片。省略 `query` 则列出最新条目。 |
+| `notebook_read` | 按编号读原文，可带前后文（`before`/`after`），可读整页书签（`page`），有字数上限并标明截断。 |
+| `notebook_mark` | `ids` + `title` 建书签页；`text` 写一条自己的思考。两者可同时用。 |
+
+另外有 `/notebook` 命令，让你自己看一眼当前会话的条目数、分层、话题和书签。
+
+## 配置
+
+`cordis.patch.yml` 里已给出全部可调项（都有默认值）：
+
+| 键 | 默认 | 说明 |
+| --- | --- | --- |
+| `dataDir` | `~/.dsh/notebook` | 数据目录，每个会话一个 JSONL |
+| `entryChars` | `4000` | 单条最多存多少字 |
+| `abstractChars` | `140` | 搜索卡片摘要长度 |
+| `midTurns` | `20` | 超过多少轮才算「远」 |
+| `searchLimit` | `8` | 默认返回条数 |
+| `readMaxChars` | `2400` | 单次读取字数上限 |
+| `instructions` | `true` | 是否加一条系统提示说明笔记本存在 |
+| `includeSubagents` | `false` | 是否也给子会话记账 |
+| `tagRules` | `{}` | 追加话题规则，如 `{ 家人: '妈妈|爸爸|家里' }` |
+
+## 数据与隐私
+
+- 全部在本机：`~/.dsh/notebook/<sessionId>.jsonl`，一行一条记录，可直接用文本编辑器翻看或备份。
+- 不删会话日志，不改写历史消息，不向任何服务发送内容。
+- 笔记本是**派生缓存**：删掉文件不会丢历史，下次会自动从会话日志重放重建。
+
+## 已知边界
+
+- 插件本身**不执行压缩**。压缩仍由 DSH 的 compaction 负责；笔记本保证压缩之后还能取回原文。若某个 profile 没启用 compaction，笔记本仍可当检索目录用，但旧消息本来也在上下文里，省不了 token。
+- 条目按会话隔离。跨会话共享记忆不在本版本范围内。
+- 分类是词表启发式，不调用模型；检索质量主要来自全文搜索，标签只用于浏览。
