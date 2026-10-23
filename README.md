@@ -30,6 +30,24 @@ DSH 的会话日志本身是完整的——压缩只是把**模型看得见的�
 
 另外有 `/notebook` 命令，让你自己看一眼当前会话的条目数、分层、话题和书签。
 
+## 安装
+
+没有发布到 npm，从 GitHub 取源码，再由 DSH 从本地目录安装。
+
+```bash
+git clone https://github.com/yya12123/dsh-notebook.git
+```
+
+然后在 DSH 对话里让 agent 安装这个目录（`target` 填克隆下来的绝对路径）：
+
+> 用 `plugin_manager` 的 `install_bundle` 安装 `C:\path\to\dsh-notebook`
+
+装好后工具和提示段会立刻出现在会话里；如果没出现，重启 DSH。
+
+**改完代码要重装。** 以本地链接目录安装的 bundle 不会热替换已加载的模块，必须 `remove_bundle` 再 `install_bundle`，否则跑的还是旧代码。这一点和普通插件不同。
+
+在 DSH 0.2.1-rc.2 上验证过。
+
 ## 配置
 
 `cordis.patch.yml` 里已给出全部可调项（都有默认值）：
@@ -57,3 +75,7 @@ DSH 的会话日志本身是完整的——压缩只是把**模型看得见的�
 - 插件本身**不执行压缩**。压缩仍由 DSH 的 compaction 负责；笔记本保证压缩之后还能取回原文。若某个 profile 没启用 compaction，笔记本仍可当检索目录用，但旧消息本来也在上下文里，省不了 token。
 - 条目按会话隔离。跨会话共享记忆不在本版本范围内。
 - 分类是词表启发式，不调用模型；检索质量主要来自全文搜索，标签只用于浏览。
+
+## 许可证
+
+[MIT](LICENSE)
